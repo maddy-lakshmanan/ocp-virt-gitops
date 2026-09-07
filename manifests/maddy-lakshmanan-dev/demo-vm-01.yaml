@@ -8,7 +8,7 @@ metadata:
     kubevirt.io/vm: demo-vm-01
     managed-by: temporal-ocp-virt-workflow
 spec:
-  runStrategy: Always
+  runStrategy: Manual
   instancetype:
     kind: VirtualMachineClusterInstancetype
     name: n1.medium
