@@ -1,0 +1,65 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: demo-vm-02
+  namespace: maddy-lakshmanan-dev
+  labels:
+    app: demo-vm-02
+    kubevirt.io/vm: demo-vm-02
+    managed-by: temporal-ocp-virt-workflow
+spec:
+  running: true
+  instancetype:
+    kind: VirtualMachineClusterInstancetype
+    name: n1.medium
+  preference:
+    kind: VirtualMachineClusterPreference
+    name: centos.stream10
+  dataVolumeTemplates:
+  - metadata:
+      name: demo-vm-02-rootdisk
+    spec:
+      sourceRef:
+        kind: DataSource
+        name: centos-stream10
+        namespace: openshift-virtualization-os-images
+      storage:
+        resources:
+          requests:
+            storage: 30Gi
+  template:
+    metadata:
+      labels:
+        app: demo-vm-02
+        kubevirt.io/vm: demo-vm-02
+    spec:
+      domain:
+        devices:
+          interfaces:
+          - name: default
+            masquerade: {}
+      networks:
+      - name: default
+        pod: {}
+      volumes:
+      - name: rootdisk
+        dataVolume:
+          name: demo-vm-02-rootdisk
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-vm-02-ssh
+  namespace: maddy-lakshmanan-dev
+  labels:
+    app: demo-vm-02
+    managed-by: temporal-ocp-virt-workflow
+spec:
+  clusterIP: None
+  selector:
+    kubevirt.io/vm: demo-vm-02
+  ports:
+  - name: ssh
+    port: 22
+    targetPort: 22
+    protocol: TCP
