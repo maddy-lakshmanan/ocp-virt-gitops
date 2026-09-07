@@ -1,0 +1,8 @@
+# Keeps this directory present in Git even when no VM manifests exist.
+#
+# Without this, once the last VirtualMachine manifest is removed (e.g. by
+# the Temporal workflow's saga compensation), git stops tracking the
+# now-empty manifests/ directory entirely — and ArgoCD treats a path that
+# doesn't exist in the repo as an error ("Unknown" sync status), not as
+# "zero resources desired". That leaves ArgoCD unable to compute or apply
+# pruning for whatever it previously deployed. Do not delete this file.
